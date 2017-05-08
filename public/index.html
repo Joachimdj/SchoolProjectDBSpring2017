@@ -1,0 +1,99 @@
+<html ng-app="app">
+<head>
+    <title>ngTodo</title>
+</head>
+<body>
+
+<ng-view></ng-view>
+
+<!-- Libraries -->
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.25/angular-route.min.js"></script>
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+<!-- Optional theme -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+<!-- Latest compiled and minified JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+<!-- Template -->
+<script type="text/ng-template" id="/index.html">
+    <br>
+    <div class="col-md-1"></div> <div class="col-md-10">
+
+     <input type="text" ng-model="search.name" class="form-control" placeholder="search" ><br>
+    <table class="table table-striped">
+        <tr><td><b>Name</b></td><td><b>Citys</b></td></tr>
+        <tr ng-repeat="todo in todos | filter: search">
+        <td >{{todo.name}}</a>  </td>
+            <td>{{todo.note}}</td>
+        </tr>
+    </table></div>
+    <div class="col-md-1"></div>
+    <br>
+    <button onclick="UserAction" type="button">try </button>
+</script>
+
+<script>
+    angular.module('app', ['ngRoute'])
+    //---------------
+    // Services
+    //---------------
+        .factory('Todos', function(){
+            return [
+                { name: 'AngularJS Directives', completed: true, note: 'add notes...' },
+                { name: 'Data binding', completed: true, note: 'add notes...' },
+                { name: '$scope', completed: true, note: 'add notes...' },
+                { name: 'Controllers and Modules', completed: true, note: 'add notes...' },
+                { name: 'Templates and routes', completed: true, note: 'add notes...' },
+                { name: 'Filters and Services', completed: false, note: 'add notes...' },
+                { name: 'Get started with Node/ExpressJS', completed: false, note: 'add notes...' },
+                { name: 'Setup MongoDB database', completed: false, note: 'add notes...' },
+                { name: 'Be awesome!', completed: false, note: 'add notes...' },
+            ];
+        })
+        //---------------
+        // Controllers
+        //---------------
+        .controller('bookController', ['$scope', 'Todos', function ($scope, Todos) {
+            callNetwork();
+            $scope.todos = Todos;
+        }])
+        //---------------
+        // Routes
+        //---------------
+        .config(['$routeProvider', function ($routeProvider) {
+            $routeProvider
+                .when('/', {
+                    templateUrl: '/index.html',
+                    controller: 'bookController'
+                })
+        }]);
+
+        //----------------
+        //Network
+        //----------------
+         function callNetwork() {
+             console.log("useraction");
+             var xhr = new XMLHttpRequest();
+             xhr.onreadystatechange = function () {
+                 if (this.readyState != 4) return;
+
+                 if (this.status == 200) {
+                     console.log(this.responseText);
+
+                     // we get the returned data
+                 }
+
+                 // end of state change: it can be after some time (async)
+             };
+
+             xhr.open('POST', 'http://localhost:3000/mysql/cityName', true);
+             xhr.send();
+        }
+</script>
+
+</body>
+</html>
